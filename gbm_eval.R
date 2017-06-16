@@ -110,16 +110,16 @@ if(!file.exists(dataFile) || file.size(dataFile) == 0){
 original_dataset <- get(load(dataFile))
 #########Dataset Load End##################
 
-#scores <- c(0.05, 0.10, 0.80, 0.85, 0.90, 0.95)
-score <- 0.90
+#score_thrsld <- c(0.05, 0.10, 0.80, 0.85, 0.90, 0.95)
+score_thrsld <- 0.90
 
   ##Add a helpful column
-  original_dataset$helpful <- ifelse(original_dataset$ws.score > score, "Yes", "No")
+  original_dataset$helpful <- ifelse(original_dataset$ws.score > score_thrsld, "Yes", "No")
   original_dataset$helpful <- as.factor(original_dataset$helpful)
   dim.y <- "helpful"
   
   #load Feature File
-  featureFile <- paste0("Features/FT_", genre, "_V", vote_num, "_R", score,"_S25.Rdata")
+  featureFile <- paste0("Features/FT_", genre, "_V", vote_num, "_R", score_thrsld,"_S25.Rdata")
   if(!file.exists(featureFile)){
     stop("\nFeature File Not Exists!!")
   }
@@ -131,13 +131,12 @@ score <- 0.90
   
   #Exclude tfidf features
   dim.x <- grep("^tfidf.*?", dim.x, value = TRUE,  invert = TRUE)
-  dg <- original_dataset[, c(dim.x, dim.y), with=F]
+  dataset <- original_dataset[, c(dim.x, dim.y), with=F]
   
   #Delete all rows with NA
-  dg <- na.omit(dg)
-  n.rows <- NROW(dg)
-  
-  print(table(dg$helpful))
+  dataset <- na.omit(dataset)
+  n.rows <- NROW(dataset)
+  print(table(dataset$helpful))
   
   ############Sample Size for Model Training###########
   cat("\nFinding Important Features..")
@@ -148,34 +147,31 @@ score <- 0.90
   #################################################
   
     n.sampleSize <- ceiling(n.rows * n.samplePercent/100)
-    cat("\nModel Building and Evaluation: Genre:", genre, " Vote:", vote_num, " Score:", score, " Sample Size(",n.samplePercent,"%):", n.sampleSize)
+    cat("\nModel Building and Evaluation: Genre:", genre, " Vote:", vote_num, " Score:", score_thrsld, " Sample Size(",n.samplePercent,"%):", n.sampleSize)
     
     #loop control
-    n.loop <- seq(10)
+    n.loop <- seq(1)
     for(l.counter in n.loop){
       
-      cat("\nResample: ", l.counter, " Score:", score, " Sample Size(",n.samplePercent,"%):", n.sampleSize)
-      
-      #Creates possibly balanced samples by random over-sampling minority examples, under-sampling majority examples or combination of over- and under-sampling.
-      sampleData <- ovun.sample(helpful ~ ., data = dg, method="both", p=0.5, N=n.sampleSize)$data
-      
-      #Partition sample dataset into training and testing
-      split=0.80
-      trainIndex <- as.vector(createDataPartition(y=sampleData$helpful, p=split, list=FALSE))
+      cat("\nResample: ", l.counter, " Score:", score_thrsld, " Sample Size(",n.samplePercent,"%):", n.sampleSize)
       
       ############Features select############################
-      gbm.dims <- c(seq(100, 380, 20))
-      ########################################
-      for(gbm.dim in gbm.dims){  
+      cat("\n\tGBM: Selecting Features: ", gbm.dim)
+      gbm.dim <- 840 #c(seq(100, 380, 20))
+      gbm.dim.x <- dim.x[1:gbm.dim] #feature.rank[order(feature.rank$total)[1:gbm.dim],]$name
+      #######################################################
+      
         ############################################### GBM START HERE ######################################################
-        cat("\n\tGBM: Selecting Features: ", gbm.dim)
-        
-        #selecting features
-        gbm.dim.x <- dim.x[1:gbm.dim] #feature.rank[order(feature.rank$total)[1:gbm.dim],]$name
-        
+        #Creates possibly balanced samples by random over-sampling minority examples, under-sampling majority examples or combination of over- and under-sampling.
+        balanced_data <- ovun.sample(helpful ~ ., data = dataset, method="both", p=0.5, N=n.sampleSize)$data
+      
+        #Partition sample dataset into training and testing
+        split <- 0.80
+        trainIndex <- as.vector(createDataPartition(y=balanced_data$helpful, p=split, list=FALSE))
+      
         cat("\n\tGBM: Get train and test data")
-        gbm.dataTrain <- sampleData[trainIndex, c(gbm.dim.x,dim.y), ]
-        gbm.dataTest <- sampleData[-trainIndex, c(gbm.dim.x,dim.y), ]
+        gbm.dataTrain <- balanced_data[trainIndex, c(gbm.dim.x,dim.y), ]
+        gbm.dataTest <- balanced_data[-trainIndex, c(gbm.dim.x,dim.y), ]
         
         #split train data
         gbm.trainX <- gbm.dataTrain[, gbm.dim.x, ]
@@ -185,16 +181,7 @@ score <- 0.90
         gbm.testX <- gbm.dataTest[, gbm.dim.x, ]
         gbm.testY <- as.factor(gbm.dataTest[, dim.y, ])
         
-        gbm.fitControl = trainControl(method="cv", #small size -> repeatedcv
-                                      number=n.fold, 
-                                      repeats=n.repeats,
-                                      returnResamp = "final",
-                                      selectionFunction = "best",
-                                      classProbs=TRUE, 
-                                      summaryFunction=twoClassSummary,
-                                      allowParallel = TRUE
-                                      )
-        
+
         cat("\n\tGBM: Remove columns with near zero variance")
         nearZV <- nearZeroVar(gbm.trainX)
         if(length(nearZV) > 0){
@@ -213,6 +200,15 @@ score <- 0.90
         
         cat("\n\tGBM: Learning Model")
         
+        gbm.fitControl = trainControl(method="cv", #small size -> repeatedcv
+                              number=10, 
+                              repeats=3,
+                              returnResamp = "final",
+                              selectionFunction = "best",
+                              classProbs=TRUE, 
+                              summaryFunction=twoClassSummary,
+                              allowParallel = TRUE)
+        
         gbmFit <- train(gbm.trainX, gbm.trainY, method="gbm", metric="ROC", trControl=gbm.fitControl, verbose=F)
         
         gbmImp <- varImp(gbmFit, scale = TRUE)
@@ -226,8 +222,10 @@ score <- 0.90
         f_weight[is.na(f_weight)] <- length(gbm.dim.x) * (-1)
         feature.imp <- cbind(feature.imp, weight=f_weight)
         
+        
+        
         #cat("\n\tGBM: Get Evaluation Score")
-        gbmScore <- cbind(genre=genre, vote=vote_num, ws.score=score, sample.size=n.sampleSize, features=gbm.dim, get_eval_score(gbmFit, gbm.trainX, gbm.trainY, gbm.testX, gbm.testY, score, "GBM"))
+        gbmScore <- cbind(genre=genre, vote=vote_num, ws.score=score_thrsld, sample.size=n.sampleSize, features=gbm.dim, get_eval_score(gbmFit, gbm.trainX, gbm.trainY, gbm.testX, gbm.testY, score_thrsld, "GBM"))
         #cat("\n\tGBM: Done\n") 
         ################################################ GBM END HERE #######################################################
         
@@ -235,14 +233,14 @@ score <- 0.90
         #print(gbmScore)
         comb.score <- rbind(comb.score, gbmScore)
         
-      }#end of dimentions
+      
       
     }#end of loop
     
 
   
   #Save score
-  outputFile <- paste0("Evaluation/SCORE_", genre, "_V", vote_num, "_R", score,".Rdata")
+  outputFile <- paste0("Evaluation/SCORE_", genre, "_V", vote_num, "_R", score_thrsld,".Rdata")
   if(!file.exists(outputFile)){
     file.create(outputFile)  
   } 
@@ -270,7 +268,7 @@ score <- 0.90
     feature.imp <- feature.imp[order(-feature.imp$total),]
     rownames(feature.imp) <- NULL
     
-    outputFile <- paste0("ImpFeatures/Imp_FT_", genre, "_V", vote_num, "_R", score,".Rdata")
+    outputFile <- paste0("ImpFeatures/Imp_FT_", genre, "_V", vote_num, "_R", score_thrsld,".Rdata")
     if(!file.exists(outputFile)){
       file.create(outputFile)  
     } 

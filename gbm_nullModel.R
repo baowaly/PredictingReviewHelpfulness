@@ -31,73 +31,8 @@ freeCores = max(1, detectCores(logical = FALSE) - 1)
 registerDoMC(freeCores)
 
 #Set path
-path = "/home/baowaly/steam/"
-#path = "/home/yipeitu/steam_helpful_review_20160701/"
+path = "~/PredictingReviewHelpfulness/"
 setwd(path)
-
-#Model Evaluation function
-get_eval_score = function(model.fit, trainX, trainY, testX, testY, score, method){
-  
-  positiveClass <- ifelse(score %in% c(0.05, 0.10), "No", "Yes")
-  
-  #Evaluation on Training Data
-  #train.pred <- predict(model.fit, trainX)
-  train.pred <- predict(model.fit, type = "raw")
-  train.ref <- trainY#dataTrain$helpful
-  train.confMatrx <- confusionMatrix(data=train.pred, reference=train.ref, positive=positiveClass, mode = "everything")
-  train.accuracy <- train.confMatrx$overall[["Accuracy"]]
-  train.f1score <- train.confMatrx$byClass[["F1"]]
-  
-  #NULL MODEL
-  #train.pred.null <- 
-  
-  
-  #Training AUC
-  train.pred.prob <- predict(model.fit, type = "prob")
-  pred_vector <- train.pred.prob$Yes
-  if(positiveClass == "No")
-    pred_vector <- train.pred.prob$No
-  ref_vector <- as.factor(ifelse(train.ref == positiveClass, 1, 0)) #make numeric
-  auc.pred <- prediction(predictions = pred_vector, labels = ref_vector)
-  auc.tmp <- performance(auc.pred,"auc");
-  train.auc <- as.numeric(auc.tmp@y.values)
-  
-  #Evaluation on Test Data
-  test.pred <- predict(model.fit, testX)
-  test.ref <- testY#dataTest$helpful
-  test.confMatrx <- confusionMatrix(data=test.pred, reference=test.ref, positive=positiveClass, mode = "everything")
-  test.precision <- test.confMatrx$byClass[["Precision"]]
-  test.recall <- test.confMatrx$byClass[["Recall"]]
-  test.sensitivity <- test.confMatrx$byClass[["Sensitivity"]]
-  test.specificity <- test.confMatrx$byClass[["Specificity"]]
-  test.accuracy <- test.confMatrx$overall[["Accuracy"]]
-  test.f1score <- test.confMatrx$byClass[["F1"]]
-  cat("\n\tF1score: ", test.f1score)
-  
-  #Test AUC
-  test.pred.prob <- predict(model.fit, testX, type = "prob")
-  pred_vector <- test.pred.prob$Yes
-  if(positiveClass == "No")
-    pred_vector <- test.pred.prob$No
-  ref_vector <- as.numeric(ifelse(test.ref == positiveClass, 1, 0)) #make numeric
-  auc.pred <- prediction(predictions = pred_vector, labels = ref_vector)
-  auc.tmp <- performance(auc.pred,"auc");
-  test.auc <- as.numeric(auc.tmp@y.values)
-  
-  return(data.table(train.accuracy=train.accuracy, 
-                    train.f1score=train.f1score, 
-                    train.auc=train.auc, 
-                    test.precision=test.precision, 
-                    test.recall=test.recall, 
-                    test.sensitivity=test.sensitivity, 
-                    test.specificity=test.specificity, 
-                    test.accuracy=test.accuracy, 
-                    test.f1score=test.f1score, 
-                    test.auc=test.auc, 
-                    method=method))
-}
-
-##########Model Bulding and Evaluation###########
 
 #######Select Some Parameters#########
 genre <- "Racing"
