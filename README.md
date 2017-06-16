@@ -211,7 +211,7 @@ under-sampling.
 
     ## 
     ##   No  Yes 
-    ## 1162 1089
+    ## 1112 1139
 
 ### 6. Partition training and test dataset
 
@@ -338,17 +338,17 @@ directory. The mean evaluation metrics are shown in the following table.
     impFeatures <- impFeatures[order(-impFeatures$Overall), , drop = FALSE]
     head(impFeatures, 10)
 
-    ##                           Overall
-    ## topic.17                100.00000
-    ## wv.826                   89.02433
-    ## wv.903                   83.96485
-    ## wv.698                   78.05932
-    ## wv.226                   58.00176
-    ## wv.97                    53.83582
-    ## topic.16                 51.67899
-    ## au.time.play.reciprocal  39.03578
-    ## wv.338                   36.20413
-    ## recommend                35.19844
+    ##                          Overall
+    ## wv.826                 100.00000
+    ## wv.698                  98.45235
+    ## topic.17                67.35937
+    ## n.paragraph.reciprocal  52.49048
+    ## recommend               40.25380
+    ## wv.903                  38.92087
+    ## wv.408                  34.75090
+    ## wv.743                  30.58978
+    ## wv.74                   29.54170
+    ## wv.230                  26.70491
 
 Similar to the evaluation metrics, feature importance is also computed
 by averaging the weights of 10 executions and saved it in a file in the
@@ -371,6 +371,6 @@ follows.
 
     #Horizontal bar plot
     featurePlot <- featurePlot + coord_flip()
-    print(featurePlot)
+    plot(featurePlot)
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-18-1.png)

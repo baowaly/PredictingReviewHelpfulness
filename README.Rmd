@@ -334,6 +334,6 @@ featurePlot <- ggplot(data=top_features, aes(x=feature, y=mean )) +
 
 #Horizontal bar plot
 featurePlot <- featurePlot + coord_flip()
-print(featurePlot)
+plot(featurePlot)
 ```
 
