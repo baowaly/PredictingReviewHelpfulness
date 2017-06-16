@@ -6,10 +6,8 @@ start.time <- Sys.time()
 
 cat("Loading Packages..")
 
-# source("/home/baowaly/steam/c.R/featureRankingAll.R")
 list.of.packages <- c("caret", "data.table","parallel","doMC", "gbm", "e1071", "xgboost", "ROCR", "pROC", "DMwR", "ROSE", "plyr", "binom")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-
 if(length(new.packages)) install.packages(new.packages, repos="http://cran.rstudio.com/")
 
 library(data.table)
@@ -31,8 +29,7 @@ freeCores = max(1, detectCores(logical = FALSE) - 1)
 registerDoMC(freeCores)
 
 #Set path
-path = "/home/baowaly/1052DataScience/"
-#path = "/home/yipeitu/steam_helpful_review_20160701/"
+path = "~/PredictingReviewHelpfulness/"
 setwd(path)
 
 #Model Evaluation function
@@ -98,7 +95,7 @@ get_eval_score = function(model.fit, trainX, trainY, testX, testY, score, method
 
 #######Select Some Parameters#########
 genre <- "Racing"
-vote.num <- 50
+vote_num <- 50
 
 #Cross Validation Params
 n.fold <- 10 
@@ -110,19 +107,19 @@ dataFile <- paste0("Dataset/Reviews_", genre ,"_50.Rdata")
 if(!file.exists(dataFile) || file.size(dataFile) == 0){
   stop("Data file doesn't exist")
 }
-d.genre.vote <- get(load(dataFile))
+original_dataset <- get(load(dataFile))
 #########Dataset Load End##################
 
 #scores <- c(0.05, 0.10, 0.80, 0.85, 0.90, 0.95)
 score <- 0.90
 
   ##Add a helpful column
-  d.genre.vote$helpful <- ifelse(d.genre.vote$ws.score > score, "Yes", "No")
-  d.genre.vote$helpful <- as.factor(d.genre.vote$helpful)
+  original_dataset$helpful <- ifelse(original_dataset$ws.score > score, "Yes", "No")
+  original_dataset$helpful <- as.factor(original_dataset$helpful)
   dim.y <- "helpful"
   
   #load Feature File
-  featureFile <- paste0("Features/FT_", genre, "_V", vote.num, "_R", score,"_S25.Rdata")
+  featureFile <- paste0("Features/FT_", genre, "_V", vote_num, "_R", score,"_S25.Rdata")
   if(!file.exists(featureFile)){
     stop("\nFeature File Not Exists!!")
   }
@@ -134,7 +131,7 @@ score <- 0.90
   
   #Exclude tfidf features
   dim.x <- grep("^tfidf.*?", dim.x, value = TRUE,  invert = TRUE)
-  dg <- d.genre.vote[, c(dim.x, dim.y), with=F]
+  dg <- original_dataset[, c(dim.x, dim.y), with=F]
   
   #Delete all rows with NA
   dg <- na.omit(dg)
@@ -151,7 +148,7 @@ score <- 0.90
   #################################################
   
     n.sampleSize <- ceiling(n.rows * n.samplePercent/100)
-    cat("\nModel Building and Evaluation: Genre:", genre, " Vote:", vote.num, " Score:", score, " Sample Size(",n.samplePercent,"%):", n.sampleSize)
+    cat("\nModel Building and Evaluation: Genre:", genre, " Vote:", vote_num, " Score:", score, " Sample Size(",n.samplePercent,"%):", n.sampleSize)
     
     #loop control
     n.loop <- seq(10)
@@ -230,7 +227,7 @@ score <- 0.90
         feature.imp <- cbind(feature.imp, weight=f_weight)
         
         #cat("\n\tGBM: Get Evaluation Score")
-        gbmScore <- cbind(genre=genre, vote=vote.num, ws.score=score, sample.size=n.sampleSize, features=gbm.dim, get_eval_score(gbmFit, gbm.trainX, gbm.trainY, gbm.testX, gbm.testY, score, "GBM"))
+        gbmScore <- cbind(genre=genre, vote=vote_num, ws.score=score, sample.size=n.sampleSize, features=gbm.dim, get_eval_score(gbmFit, gbm.trainX, gbm.trainY, gbm.testX, gbm.testY, score, "GBM"))
         #cat("\n\tGBM: Done\n") 
         ################################################ GBM END HERE #######################################################
         
@@ -245,7 +242,7 @@ score <- 0.90
 
   
   #Save score
-  outputFile <- paste0("Evaluation/SCORE_", genre, "_V", vote.num, "_R", score,".Rdata")
+  outputFile <- paste0("Evaluation/SCORE_", genre, "_V", vote_num, "_R", score,".Rdata")
   if(!file.exists(outputFile)){
     file.create(outputFile)  
   } 
@@ -273,7 +270,7 @@ score <- 0.90
     feature.imp <- feature.imp[order(-feature.imp$total),]
     rownames(feature.imp) <- NULL
     
-    outputFile <- paste0("ImpFeatures/Imp_FT_", genre, "_V", vote.num, "_R", score,".Rdata")
+    outputFile <- paste0("ImpFeatures/Imp_FT_", genre, "_V", vote_num, "_R", score,".Rdata")
     if(!file.exists(outputFile)){
       file.create(outputFile)  
     } 
