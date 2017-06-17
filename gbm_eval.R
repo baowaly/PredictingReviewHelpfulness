@@ -151,7 +151,7 @@ n.rows <- NROW(dataset)
 print(table(dataset$helpful))
 
 #Sample size
-n.samplePercent <- 10
+n.samplePercent <- 100
 n.sampleSize <- ceiling(n.rows * n.samplePercent/100)
 
 

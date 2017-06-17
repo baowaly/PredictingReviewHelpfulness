@@ -119,7 +119,7 @@ get_eval_score = function(model.fit, trainX, trainY, testX, testY, score, method
 }
 ```
 
-On the steam store there are many game genres e.g. action, racing, survival, rpg etc. In this case, we are investigating the helpfulness of Racing game genre. We have considered those reviews which have at least 50 votes.
+On the steam store there are many game genres e.g. action, racing, survival, rpg etc. In this case, we are investigating the helpfulness of Racing game genre. We have considered those reviews which have at least 50 votes. The following step by step explanation are from the script __gbm_eval.R.__
 ```{r}
 #Define some variables
 genre <- "Racing"
@@ -148,7 +148,7 @@ You should see `r nrow(original_dataset)` reviews and `r ncol(original_dataset)`
 ###3. Add target variable/column
 Steam helpfulness (target variable) of a review is defined by the rating score of that review. The rating score of a particular review is computed as the following equation:
 
-$Score = \frac{N_y}{N_p +  N_n}$, where $N_y$ represents the number of people who feel the review is helpful (Yes votes) and $N_n$ represents the number of people feel the review is not helpful (No votes). 
+$$Score =\frac{N_y}{N_p +  N_n},$$ where $N_y$ represents the number of people who feel the review is helpful (Yes votes) and $N_n$ represents the number of people feel the review is not helpful (No votes). 
 
 Now depending on a score threshold (0.90) we defined our target variable helpful as follows:
 ```{r}
@@ -301,10 +301,41 @@ Precision         | `r round(final_eval_score[["train.precision"]],3) ` | `r rou
 Recall            | `r round(final_eval_score[["train.recall"]],3) `    | `r round(final_eval_score[["test.recall"]],3) ` 
 F1-score          | `r round(final_eval_score[["train.f1score"]],3) `   | `r round(final_eval_score[["test.f1score"]],3) ` 
 AUC               | `r round(final_eval_score[["train.auc"]],3) `       | `r round(final_eval_score[["test.auc"]],3) ` 
+```{r}
+#Plot AUC curve
+test.pred <- predict(gbmFit, gbm.testX, type="prob")
+test.ref <- gbm.testY
+predob <- prediction(test.pred$Yes, test.ref)
+perf <- performance(predob, "tpr", "fpr")
+plot(perf)
+```
+
+From the above evaluation result, we found our model performed very well to classify whether the reviews were helpful or not. All evaluation metrics are about 99% for test dataset.
+
+###10. Model Validation: Compare with the null model  
+One way of validating our model is to compare the model with the null model. We have a seperate script __gbm_nullModel.R__. By executing this file we have the following resrults. Remember that in null model, all observations are predicted as the major class. In our case it is No.
+```{r}
+#Confusion matrix of the null model from training dataset
+null.cmTrain <- as.table(array(c(1750, 0, 52, 0),dim=c(2,2), dimnames=list(c("No","Yes"),c("No","Yes"))))
+names(attributes(null.cmTrain)$dimnames) <- c("Reference","Prediction")
+print(null.cmTrain)
+```
+```{r}
+#Confusion matrix of the null model from test dataset
+null.cmTest <- as.table(array(c(437, 0, 12, 0),dim=c(2,2), dimnames=list(c("No","Yes"),c("No","Yes"))))
+names(attributes(null.cmTest)$dimnames) <- c("Reference","Prediction")
+print(null.cmTest)
+```
+
+Evaluation Metric | Our model         | Null model
+----------------- |-------------------|-----------
+Training Accuracy | 1                 | 0.971
+Test Accuracy     | 0.989             | 0.973
+
+From the above table, we can see that our model performed better than the null model.
 
 
-###10. What makes review helpful
-
+###11. What makes review helpful
 ```{r}
 #Important features
 gbmImp <- varImp(gbmFit, scale = TRUE)

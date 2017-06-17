@@ -46,7 +46,8 @@ Model training and evaluation:
 On the steam store there are many game genres e.g. action, racing,
 survival, rpg etc. In this case, we are investigating the helpfulness of
 Racing game genre. We have considered those reviews which have at least
-50 votes.
+50 votes. The following step by step explanation are from the script
+**gbm\_eval.R.**
 
     #Define some variables
     genre <- "Racing"
@@ -80,10 +81,10 @@ Steam helpfulness (target variable) of a review is defined by the rating
 score of that review. The rating score of a particular review is
 computed as the following equation:
 
-$Score = \\frac{N\_y}{N\_p + N\_n}$, where *N*<sub>*y*</sub> represents
-the number of people who feel the review is helpful (Yes votes) and
-*N*<sub>*n*</sub> represents the number of people feel the review is not
-helpful (No votes).
+$$Score =\\frac{N\_y}{N\_p +  N\_n},$$
+ where *N*<sub>*y*</sub> represents the number of people who feel the
+review is helpful (Yes votes) and *N*<sub>*n*</sub> represents the
+number of people feel the review is not helpful (No votes).
 
 Now depending on a score threshold (0.90) we defined our target variable
 helpful as follows:
@@ -211,7 +212,7 @@ under-sampling.
 
     ## 
     ##   No  Yes 
-    ## 1112 1139
+    ## 1121 1130
 
 ### 6. Partition training and test dataset
 
@@ -225,13 +226,13 @@ Partition dataset into training (80%) and test (20%).
     gbm.dataTrain <- balanced_data[trainIndex, c(gbm.dim.x,dim.y), ]
     dim(gbm.dataTrain)
 
-    ## [1] 1802  841
+    ## [1] 1801  841
 
     #Get test data
     gbm.dataTest <- balanced_data[-trainIndex, c(gbm.dim.x,dim.y), ]
     dim(gbm.dataTest)
 
-    ## [1] 449 841
+    ## [1] 450 841
 
     #Split train data
     gbm.trainX <- gbm.dataTrain[, gbm.dim.x, ]
@@ -328,7 +329,72 @@ directory. The mean evaluation metrics are shown in the following table.
 </tbody>
 </table>
 
-### 10. What makes review helpful
+    #Plot AUC curve
+    test.pred <- predict(gbmFit, gbm.testX, type="prob")
+    test.ref <- gbm.testY
+    predob <- prediction(test.pred$Yes, test.ref)
+    perf <- performance(predob, "tpr", "fpr")
+    plot(perf)
+
+![](README_files/figure-markdown_strict/unnamed-chunk-17-1.png)
+
+From the above evaluation result, we found our model performed very well
+to classify whether the reviews were helpful or not. All evaluation
+metrics are about 99% for test dataset.
+
+### 10. Model Validation: Compare with the null model
+
+One way of validating our model is to compare the model with the null
+model. We have a seperate script **gbm\_nullModel.R**. By executing this
+file we have the following resrults. Remember that in null model, all
+observations are predicted as the major class. In our case it is No.
+
+    #Confusion matrix of the null model from training dataset
+    null.cmTrain <- as.table(array(c(1750, 0, 52, 0),dim=c(2,2), dimnames=list(c("No","Yes"),c("No","Yes"))))
+    names(attributes(null.cmTrain)$dimnames) <- c("Reference","Prediction")
+    print(null.cmTrain)
+
+    ##          Prediction
+    ## Reference   No  Yes
+    ##       No  1750   52
+    ##       Yes    0    0
+
+    #Confusion matrix of the null model from test dataset
+    null.cmTest <- as.table(array(c(437, 0, 12, 0),dim=c(2,2), dimnames=list(c("No","Yes"),c("No","Yes"))))
+    names(attributes(null.cmTest)$dimnames) <- c("Reference","Prediction")
+    print(null.cmTest)
+
+    ##          Prediction
+    ## Reference  No Yes
+    ##       No  437  12
+    ##       Yes   0   0
+
+<table>
+<thead>
+<tr class="header">
+<th>Evaluation Metric</th>
+<th>Our model</th>
+<th>Null model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Training Accuracy</td>
+<td>1</td>
+<td>0.971</td>
+</tr>
+<tr class="even">
+<td>Test Accuracy</td>
+<td>0.989</td>
+<td>0.973</td>
+</tr>
+</tbody>
+</table>
+
+From the above table, we can see that our model performed better than
+the null model.
+
+### 11. What makes review helpful
 
     #Important features
     gbmImp <- varImp(gbmFit, scale = TRUE)
@@ -338,17 +404,17 @@ directory. The mean evaluation metrics are shown in the following table.
     impFeatures <- impFeatures[order(-impFeatures$Overall), , drop = FALSE]
     head(impFeatures, 10)
 
-    ##                          Overall
-    ## wv.826                 100.00000
-    ## wv.698                  98.45235
-    ## topic.17                67.35937
-    ## n.paragraph.reciprocal  52.49048
-    ## recommend               40.25380
-    ## wv.903                  38.92087
-    ## wv.408                  34.75090
-    ## wv.743                  30.58978
-    ## wv.74                   29.54170
-    ## wv.230                  26.70491
+    ##             Overall
+    ## wv.698    100.00000
+    ## wv.826     81.67358
+    ## wv.638     62.18918
+    ## topic.17   61.23736
+    ## wv.903     50.87039
+    ## wv.74      45.76966
+    ## recommend  43.51761
+    ## wv.203     43.50265
+    ## wv.743     43.46285
+    ## wv.759     33.59917
 
 Similar to the evaluation metrics, feature importance is also computed
 by averaging the weights of 10 executions and saved it in a file in the
@@ -373,4 +439,4 @@ follows.
     featurePlot <- featurePlot + coord_flip()
     plot(featurePlot)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-18-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-21-1.png)
