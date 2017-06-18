@@ -212,7 +212,7 @@ under-sampling.
 
     ## 
     ##   No  Yes 
-    ## 1153 1098
+    ## 1148 1103
 
 ### 6. Partition training and test dataset
 
@@ -405,16 +405,16 @@ the null model.
     head(impFeatures, 10)
 
     ##                  Overall
-    ## wv.903         100.00000
-    ## wv.743          79.97641
-    ## wv.698          75.55636
-    ## wv.826          70.61062
-    ## recommend       69.96005
-    ## topic.17        58.53685
-    ## wv.783          55.51618
-    ## wv.330          55.38717
-    ## wv.97           45.21331
-    ## ratio.cap.root  40.37270
+    ## wv.826         100.00000
+    ## wv.698          88.51781
+    ## recommend       82.69755
+    ## wv.645          63.75691
+    ## wv.903          55.46920
+    ## wv.743          30.16054
+    ## wv.723          26.60150
+    ## ratio.cap.root  26.34137
+    ## wv.190          26.02646
+    ## topic.15        25.81610
 
 Similar to the evaluation metrics, feature importance is also computed
 by averaging the weights of 10 executions and saved it in a file in the
