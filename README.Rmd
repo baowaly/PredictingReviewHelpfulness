@@ -148,7 +148,8 @@ You should see `r nrow(original_dataset)` reviews and `r ncol(original_dataset)`
 ###3. Add target variable/column
 Steam helpfulness (target variable) of a review is defined by the rating score of that review. The rating score of a particular review is computed as the following equation:
 
-$$Score =\frac{N_y}{N_p +  N_n},$$ where $N_y$ represents the number of people who feel the review is helpful (Yes votes) and $N_n$ represents the number of people feel the review is not helpful (No votes). 
+$$Score = N_y/(N_y +  N_n),$$
+where $N_y$ represents the number of people who feel the review is helpful (Yes votes) and $N_n$ represents the number of people feel the review is not helpful (No votes). 
 
 Now depending on a score threshold (0.90) we defined our target variable helpful as follows:
 ```{r}
@@ -367,4 +368,4 @@ featurePlot <- ggplot(data=top_features, aes(x=feature, y=mean )) +
 featurePlot <- featurePlot + coord_flip()
 plot(featurePlot)
 ```
-
+We found that review helpfulness mostly depends on metadata features and the hidden word em-bedding features (Word2Vec).

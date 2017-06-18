@@ -81,7 +81,7 @@ Steam helpfulness (target variable) of a review is defined by the rating
 score of that review. The rating score of a particular review is
 computed as the following equation:
 
-$$Score =\\frac{N\_y}{N\_p +  N\_n},$$
+*S**c**o**r**e* = *N*<sub>*y*</sub>/(*N*<sub>*y*</sub> + *N*<sub>*n*</sub>),
  where *N*<sub>*y*</sub> represents the number of people who feel the
 review is helpful (Yes votes) and *N*<sub>*n*</sub> represents the
 number of people feel the review is not helpful (No votes).
@@ -212,7 +212,7 @@ under-sampling.
 
     ## 
     ##   No  Yes 
-    ## 1121 1130
+    ## 1153 1098
 
 ### 6. Partition training and test dataset
 
@@ -226,13 +226,13 @@ Partition dataset into training (80%) and test (20%).
     gbm.dataTrain <- balanced_data[trainIndex, c(gbm.dim.x,dim.y), ]
     dim(gbm.dataTrain)
 
-    ## [1] 1801  841
+    ## [1] 1802  841
 
     #Get test data
     gbm.dataTest <- balanced_data[-trainIndex, c(gbm.dim.x,dim.y), ]
     dim(gbm.dataTest)
 
-    ## [1] 450 841
+    ## [1] 449 841
 
     #Split train data
     gbm.trainX <- gbm.dataTrain[, gbm.dim.x, ]
@@ -404,17 +404,17 @@ the null model.
     impFeatures <- impFeatures[order(-impFeatures$Overall), , drop = FALSE]
     head(impFeatures, 10)
 
-    ##             Overall
-    ## wv.698    100.00000
-    ## wv.826     81.67358
-    ## wv.638     62.18918
-    ## topic.17   61.23736
-    ## wv.903     50.87039
-    ## wv.74      45.76966
-    ## recommend  43.51761
-    ## wv.203     43.50265
-    ## wv.743     43.46285
-    ## wv.759     33.59917
+    ##                  Overall
+    ## wv.903         100.00000
+    ## wv.743          79.97641
+    ## wv.698          75.55636
+    ## wv.826          70.61062
+    ## recommend       69.96005
+    ## topic.17        58.53685
+    ## wv.783          55.51618
+    ## wv.330          55.38717
+    ## wv.97           45.21331
+    ## ratio.cap.root  40.37270
 
 Similar to the evaluation metrics, feature importance is also computed
 by averaging the weights of 10 executions and saved it in a file in the
@@ -439,4 +439,6 @@ follows.
     featurePlot <- featurePlot + coord_flip()
     plot(featurePlot)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-21-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-21-1.png) We found
+that review helpfulness mostly depends on metadata features and the
+hidden word em-bedding features (Word2Vec).
