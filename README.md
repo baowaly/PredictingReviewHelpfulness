@@ -160,7 +160,9 @@ head(dataset[,1:5], 5)
 
 We did an investigation with a smaller sample size (50% of the dataset) taking the upper limit of feature size by 1000. The results are displayed in the following Figure.
 
-<img src="figure/feature_score.png" title="F-score by number of features" alt="F-score by number of features" style="display: block; margin: auto;" /> From the above plot of F-score against number of feature, we can clearly see that the best F-scores of the dataset were found when the number of features were 840.
+<img src="figure/feature_score.png" title="F-score by number of features" alt="F-score by number of features" style="display: block; margin: auto;" /> 
+
+From the above plot of F-score against number of feature, we can clearly see that the best F-scores of the dataset were found when the number of features were 840.
 
 ``` r
 #Select number of features
