@@ -1,10 +1,8 @@
 ---
 title: "Predicting the Helpfulness of Racing Game Reviews on the Steam Store"
 author: "Mrinal Kanti Baowaly, TIGP Ph.D. Research Fellow, Academia Sinica, Taiwan."
-output: md_document
+output: github_document
 ---
-#Predicting the Helpfulness of Racing Game Reviews on the Steam Store
-###Mrinal Kanti Baowaly, TIGP Ph.D. Research Fellow, Academia Sinica, Taiwan.
 
 ## Our goal:
 The goal of this research is to construct a model that can accurately predict the helpfulness of game reviews. We can define our problem as follows:
@@ -16,9 +14,15 @@ The goal of this research is to construct a model that can accurately predict th
 
 * __gbm_eval.R:__ In our experiment, we employed a GBM (Gradient Boosting Machine) classifier for model training and evaluation. Before applying GBM to train the model, we investigated our dataset and found it imbalanced. To combat this imbalanced dataset, we applied a number of options discussed step by step in later sections.
  
-* __gbm_nullModel.R:__ For binary classification null model is built to compare the model performance. In our experiment, we to build up a null model we predict all observation to majority class.
+* __gbm_nullModel.R:__ For binary classification a null model is built to compare the model performance. In our experiment, we designed a null model that predicted all observation to majority class. 
 
-##Model training and evaluation:
+##How to reproduce the result:
+* Download the repository from https://github.com/baowaly/PredictingReviewHelpfulness
+* I have already ranked the features and saved in the directory 'Features'. You may also execute the script feature_ranking.R to check how it works.
+* Execute the script: gbm_eval.R
+* Execute the script: gbm_nullModel.R
+
+##Tutorial of model training and evaluation:
 ```{r setup, include = FALSE}
 # Installing and loading required packages
 
@@ -197,7 +201,7 @@ head(dataset[,1:5], 5)
 We did an investigation with a smaller sample size (50% of the dataset) taking the upper limit of feature size by 1000. The results are displayed in the following Figure.
 
 <img src="figure/feature_score.png" title="F-score by number of features" alt="F-score by number of features" style="display: block; margin: auto;" />
-From the above plot of F-score againts number of feature, we can clearly see that the best F-scores of the dataset were found when the number of features were 840.
+From the above plot of F-score against number of feature, we can clearly see that the best F-scores of the dataset were found when the number of features were 840.
 ```{r}
 #Select number of features
 gbm.dim <- 840
@@ -368,4 +372,9 @@ featurePlot <- ggplot(data=top_features, aes(x=feature, y=mean )) +
 featurePlot <- featurePlot + coord_flip()
 plot(featurePlot)
 ```
-We found that review helpfulness mostly depends on metadata features and the hidden word em-bedding features (Word2Vec).
+
+We found that review helpfulness mostly depends on:
+
+* Metadata features
+* The hidden word embedding features (Word2Vec) and 
+* LDA topic based features.

@@ -242,8 +242,16 @@ save(comb.score, file=outputFile)
 final_eval_score <- sapply(Filter(is.numeric, comb.score), mean)
 print(final_eval_score)
 
-#########Save Feautre Importance#################################
-feature.imp.do <- T
+################Plot AUC Score###########################
+test.pred <- predict(gbmFit, gbm.testX, type="prob")
+test.ref <- gbm.testY
+predob <- prediction(test.pred$Yes, test.ref)
+perf <- performance(predob, "tpr", "fpr")
+plot(perf)
+
+
+#########Save Feautre Importance##########################
+feature.imp.do <- F
 if(feature.imp.do){
   #make summation of weights
   feature.imp <- as.data.frame(feature.imp, stringsAsFactors=FALSE)
