@@ -160,9 +160,7 @@ head(dataset[,1:5], 5)
 
 We did an investigation with a smaller sample size (50% of the dataset) taking the upper limit of feature size by 1000. The results are displayed in the following Figure.
 
-<img src="figure/feature_score.png" title="F-score by number of features" alt="F-score by number of features" style="display: block; margin: auto;" /> 
-
-From the above plot of F-score against number of feature, we can clearly see that the best F-scores of the dataset were found when the number of features were 840.
+<img src="figure/feature_score.png" title="F-score by number of features" alt="F-score by number of features" style="display: block; margin: auto;" /> From the above plot of F-score against number of feature, we can clearly see that the best F-scores of the dataset were found when the number of features were 840.
 
 ``` r
 #Select number of features
@@ -198,7 +196,7 @@ print(table(balanced_data$helpful))
 
     ## 
     ##   No  Yes 
-    ## 1139 1112
+    ## 1105 1146
 
 ### 6. Partition training and test dataset
 
@@ -214,7 +212,7 @@ gbm.dataTrain <- balanced_data[trainIndex, c(gbm.dim.x,dim.y), ]
 dim(gbm.dataTrain)
 ```
 
-    ## [1] 1802  841
+    ## [1] 1801  841
 
 ``` r
 #Get test data
@@ -222,7 +220,7 @@ gbm.dataTest <- balanced_data[-trainIndex, c(gbm.dim.x,dim.y), ]
 dim(gbm.dataTest)
 ```
 
-    ## [1] 449 841
+    ## [1] 450 841
 
 ``` r
 #Split train data
@@ -355,17 +353,17 @@ impFeatures <- impFeatures[order(-impFeatures$Overall), , drop = FALSE]
 head(impFeatures, 10)
 ```
 
-    ##             Overall
-    ## wv.698    100.00000
-    ## topic.17   68.15273
-    ## recommend  53.99203
-    ## wv.903     53.09870
-    ## wv.743     51.41265
-    ## wv.365     48.28580
-    ## wv.826     30.56641
-    ## wv.330     30.15791
-    ## topic.16   27.74261
-    ## wv.539     25.22714
+    ##                    Overall
+    ## wv.698           100.00000
+    ## wv.903            79.68782
+    ## wv.743            68.56388
+    ## recommend         47.82878
+    ## wv.819            41.77297
+    ## wv.226            37.71184
+    ## wv.701            36.39785
+    ## wv.330            35.35896
+    ## wv.512            32.78374
+    ## n.content.remove  32.10252
 
 Similar to the evaluation metrics, feature importance is also computed by averaging the weights of 10 executions and saved it in a file in the ImpFeatures directory. The plotting of feature importace is shown as follows.
 
@@ -386,7 +384,7 @@ featurePlot <- ggplot(data=top_features, aes(x=feature, y=mean )) +
 
 #Horizontal bar plot
 featurePlot <- featurePlot + coord_flip()
-plot(featurePlot)
+print(featurePlot)
 ```
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-21-1.png)
