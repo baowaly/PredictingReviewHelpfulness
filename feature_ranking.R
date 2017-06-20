@@ -6,7 +6,7 @@ start.time <- Sys.time()
 cat("\nLoading Packages..")
 
 # source("/home/baowaly/steam/c.R/featureRankingAll.R")
-list.of.packages <- c("data.table","parallel","caret", "randomForest", "ggplot2", "doMC","DMwR", "ROSE")
+list.of.packages <- c("data.table","parallel","caret", "randomForest", "ggplot2", "doMC","ROSE")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, repos="http://cran.rstudio.com/")
 library(data.table)
@@ -15,7 +15,6 @@ library(randomForest, warn.conflicts = FALSE)
 library(ggplot2, warn.conflicts = FALSE)
 library(caret)
 library(doMC)
-library(DMwR)
 library(ROSE)
 
 #Register cores

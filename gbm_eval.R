@@ -250,7 +250,7 @@ plot(perf)
 
 
 #########Save Feautre Importance##########################
-feature.imp.do <- F
+feature.imp.do <- T
 if(feature.imp.do){
   #make summation of weights
   feature.imp <- as.data.frame(feature.imp, stringsAsFactors=FALSE)
