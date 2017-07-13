@@ -1,8 +1,8 @@
 Predicting the Helpfulness of Game Reviews: A Case Study on the Steam Store
 ================
-Mrinal Kanti Baowaly, TIGP Ph.D. Research Fellow, Institute of Information Science, Academia Sinica, Taiwan.
+Mrinal Kanti Baowaly, Yi-Pei Tu and Kuan-Ta Chen, Ph.D. 
 
-Kuan-Ta Chen, Ph.D., Professor, Institute of Information Science, Academia Sinica, Taiwan.
+Institute of Information Science, Academia Sinica, Taiwan.
 
 Our goal:
 ---------
