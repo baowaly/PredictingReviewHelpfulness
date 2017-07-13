@@ -1,6 +1,7 @@
-Predicting the Helpfulness of Racing Game Reviews on the Steam Store
+Predicting the Helpfulness of Game Reviews: A Case Study on the Steam Store
 ================
-Mrinal Kanti Baowaly, TIGP Ph.D. Research Fellow, Academia Sinica, Taiwan.
+Mrinal Kanti Baowaly, TIGP Ph.D. Research Fellow, Institute of Information Science, Academia Sinica, Taiwan.
+Kuan-Ta Chen, Ph.D., Professor, Institute of Information Science, Academia Sinica, Taiwan.
 
 Our goal:
 ---------
