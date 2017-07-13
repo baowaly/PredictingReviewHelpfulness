@@ -31,7 +31,7 @@ How to reproduce the result:
 Tutorial of model training and evaluation:
 ------------------------------------------
 
-On the steam store there are many game genres e.g. action, racing, survival, rpg etc. In this case, we are investigating the helpfulness of Racing game genre. We have considered those reviews which have at least 50 votes. The following step by step explanation are from the script **gbm\_eval.R.**
+On the steam store there are many game genres e.g. action, racing, survival, rpg etc. We have analysed top 10 game genres that are discussed and explained in the paper. In this case, we are investigating the helpfulness of Racing game genre and showing the process to reproduce its result. We have considered those reviews which have at least 50 votes. The following step by step explanation are from the script **gbm\_eval.R.**
 
 ``` r
 #Define some variables
