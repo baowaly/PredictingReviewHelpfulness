@@ -313,6 +313,7 @@ plot(perf)
 
 From the above evaluation result, we found our model performed very well to classify whether the reviews were helpful or not. All evaluation metrics are about 99% for test dataset.
 
+<!---
 ### 10. Model Validation: Compare with the null model
 
 One way of validating our model is to compare the model with the null model. We have a seperate script **gbm\_nullModel.R**. By executing this file we have the following resrults. Remember that in null model, all observations are predicted as the major class. In our case it is No.
@@ -347,8 +348,9 @@ print(null.cmTest)
 | Test Accuracy     | 0.989     | 0.973      |
 
 From the above table, we can see that our model performed better than the null model.
+-->
 
-### 11. What makes review helpful
+### 10. What makes review helpful
 
 ``` r
 #Important features
