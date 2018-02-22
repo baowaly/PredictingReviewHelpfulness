@@ -17,8 +17,9 @@ Source code explanation:
 -   **feature\_ranking.R:** Models with a large number of features may cause issues, as irrelevant features may cause confusion, or unimportant features may increase the execution cost. Thus, we needed to select a proper subset of features, and that is why we should rank the features in our dataset by their importance. In this step, we employed the Random Forest algorithm as the Recursive Feature Elimination technique to output a sorted list of features by their importance. To rank the features, we employed 10-fold cross validation taking a (random) sample size 25%. We repeated the whole process 10 times and finally calculated the mean weight of each feature to rank them.
 
 -   **gbm\_eval.R:** In our experiment, we employed a GBM (Gradient Boosting Machine) classifier for model training and evaluation. Before applying GBM to train the model, we investigated our dataset and found it imbalanced. To combat this imbalanced dataset, we applied a number of options discussed step by step in later sections.
-
+<!---
 -   **gbm\_nullModel.R:** For binary classification a null model is built to compare the model performance. In our experiment, we designed a null model that predicted all observation to majority class.
+-->
 
 How to reproduce the result:
 ----------------------------
