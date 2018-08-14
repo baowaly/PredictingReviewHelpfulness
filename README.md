@@ -67,7 +67,7 @@ You should see 2251 reviews and 2205 attributes in the original dataset of Racin
 
 ### 3. Add target variable/column
 
-Steam helpfulness (target variable) of a review is defined by the rating score of that review. The rating score of a particular review is computed taking the lower bound of Wilson scoreconfidence interval for a Binomial parameter. In this case, we have used an R function "binom.confint" from the "binom" package.
+Steam helpfulness (target variable) of a review is defined by the rating score (here, ws.score) of that review.<!--- The rating score of a particular review is computed taking the lower bound of Wilson scoreconfidence interval for a Binomial parameter. In this case, we have used an R function "binom.confint" from the "binom" package.
 
 ``` r
 ##calculate Wilson score (rating)
@@ -75,6 +75,7 @@ Steam helpfulness (target variable) of a review is defined by the rating score o
 ##n represents the total number of votes (i.e. sum of Yes and No votes)
 original_dataset$ws.score <- binom.confint(x=original_dataset$vote.agree, n=original_dataset$vote.total, conf.level = 0.95, methods=c("wilson"))$lower
 ```
+-->
 Now depending on a score threshold (0.90) we defined our target variable helpful as follows:
 
 ``` r
