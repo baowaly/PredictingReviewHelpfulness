@@ -75,8 +75,7 @@ Steam helpfulness (target variable) of a review is defined by the rating score (
 ##x represents the number of people who feel the review is helpful (Yes votes)
 ##n represents the total number of votes (i.e. sum of Yes and No votes)
 original_dataset$ws.score <- binom.confint(x=original_dataset$vote.agree, n=original_dataset$vote.total, conf.level = 0.95, methods=c("wilson"))$lower
-```
--->
+``` -->
 Now depending on a score threshold (0.90) we defined our target variable helpful as follows:
 
 ``` r
