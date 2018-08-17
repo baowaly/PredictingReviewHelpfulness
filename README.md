@@ -9,7 +9,7 @@ Our goal:
 
 The goal of this research is to construct a model that can accurately predict the helpfulness of game reviews. We can define our problem as follows:
 
-> Given a set of reviews, determine whether the reviews are helpful or not on the basis of review data, reviewer expertise and game information of those reviews.
+> Given a set of reviews, determine whether the reviews are helpful or not helpful on the basis of those review data and reviewers' expertise.
 
 Source code explanation:
 ------------------------
