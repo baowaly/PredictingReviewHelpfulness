@@ -207,7 +207,7 @@ print(table(balanced_data$helpful))
     ##   No  Yes 
     ## 1105 1146
 
-### 6. Partition training and test dataset
+### 6. Partition into training and test dataset
 
 Partition dataset into training (80%) and test (20%).
 
