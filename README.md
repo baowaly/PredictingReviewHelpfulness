@@ -300,7 +300,6 @@ final_eval_score <- sapply(Filter(is.numeric, comb.score), mean)
 | Precision         | 1              | 0.988      |
 | Recall            | 1              | 0.991      |
 | F1-score          | 1              | 0.989      |
-| AUC               | 1              | 0.999      |
 
 ``` r
 #Plot AUC curve
