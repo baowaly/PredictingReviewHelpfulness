@@ -308,10 +308,9 @@ test.ref <- gbm.testY
 predob <- prediction(test.pred$Yes, test.ref)
 perf <- performance(predob, "tpr", "fpr")
 plot(perf)
-```
--->
-
+``
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
+-->
 
 From the above evaluation result, we found our model performed very well to classify whether the reviews were helpful or not. All evaluation metrics are about 99% for test dataset.
 
@@ -372,7 +371,7 @@ head(impFeatures, 10)
     ## wv.819            41.77297
     ## wv.226            37.71184
     ## wv.701            36.39785
-    ## wv.330            35.35896
+    ## wv.330            35.35896-->
     ## wv.512            32.78374
     ## n.content.remove  32.10252
 
