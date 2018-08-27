@@ -300,7 +300,7 @@ final_eval_score <- sapply(Filter(is.numeric, comb.score), mean)
 | Precision         | 1              | 0.988      |
 | Recall            | 1              | 0.991      |
 | F1-score          | 1              | 0.989      |
-
+<!---
 ``` r
 #Plot AUC curve
 test.pred <- predict(gbmFit, gbm.testX, type="prob")
@@ -308,7 +308,7 @@ test.ref <- gbm.testY
 predob <- prediction(test.pred$Yes, test.ref)
 perf <- performance(predob, "tpr", "fpr")
 plot(perf)
-```
+```--->
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
 
