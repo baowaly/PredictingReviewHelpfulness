@@ -63,7 +63,7 @@ dim(original_dataset)
 
     ## [1] 2251 2205
 
-You should see 2251 reviews and 2205 attributes in the original dataset of Racing genre.
+You can see 2251 reviews and 2205 attributes in the original dataset of Racing genre.
 
 ### 3. Add target variable/column
 
