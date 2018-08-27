@@ -308,7 +308,8 @@ test.ref <- gbm.testY
 predob <- prediction(test.pred$Yes, test.ref)
 perf <- performance(predob, "tpr", "fpr")
 plot(perf)
-```--->
+```
+-->
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
 
