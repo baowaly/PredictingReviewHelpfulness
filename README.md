@@ -27,7 +27,6 @@ How to reproduce the result:
 -   Download the repository from <https://github.com/baowaly/PredictingReviewHelpfulness>
 -   I have already ranked the features and saved in the directory 'Features'. You may also execute the script feature\_ranking.R to check how it works.
 -   Execute the script: gbm\_eval.R
--   Execute the script: gbm\_nullModel.R
 
 Tutorial of model training and evaluation:
 ------------------------------------------
